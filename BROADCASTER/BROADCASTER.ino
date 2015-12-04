@@ -15,6 +15,7 @@ typedef struct {
   unsigned long uptime; //uptime in ms
   float         xPos;   //NEW X POSITION
   float         yPos;   //NEW Y POSITION
+  int           active;
 } mcmPayload;
 
 typedef struct {
@@ -70,7 +71,8 @@ void loop() {
     }
 
     //SEND THE DATA TO THE LIGHT CONTROL MODULE
-    sendToLCM(input);
+    //sendToLCM(input);
+    if (input == '5') sendToMCM();
 
     }
 }
@@ -130,6 +132,26 @@ void sendToLCM(char _input)
   for (int i = 0; i < 50; i++) Blink(LED, 20);
 }
 
+//--------------------------- S E N D  T O  M C M --------------------------
+
+void sendToMCM()
+{
+  Serial.println("Sending to MCM");
+  
+  cncData.nodeId = BROADCASTER_ID;
+  cncData.uptime = millis();
+  cncData.xPos = 1;
+  cncData.yPos = 1;
+  cncData.active = 1;
+  
+int retries = 3; 
+
+    if (radio.sendWithRetry(MCM_ID, (const void*)(&cncData), sizeof(cncData)),retries)
+      Serial.print("Sending Motor Data");
+    else Serial.print(" nothing...");
+
+  for (int i = 0; i < 50; i++) Blink(LED, 20);
+}
 //----------------------------------- B L I N K ----------------------------
 
 void Blink(byte PIN, int DELAY_MS)
