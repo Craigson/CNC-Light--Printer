@@ -8,6 +8,7 @@
  -------------------------------------------------------------------*/
 
 #include <RFM69.h>
+#include <SPI.h>
 
 //DEFINES FOR RADIO
 #define FREQUENCY   RF69_915MHZ // 
@@ -17,11 +18,11 @@
 #define LED   9
 
 //DEFINES FOR STEPPERS
-#define STEP  2
-#define DIR   3
-#define MS1   4
-#define MS2   5
-#define EN    6
+#define STEP  4
+#define DIR   5
+#define MS1   6
+#define MS2   7
+#define EN    8
 
 RFM69 radio;
 
@@ -128,15 +129,25 @@ void movecnc()
   Serial.println("Moving forward at default step mode.");
 
 
-  for (int x= 1; x<10; x++)  //Loop the forward stepping enough times for motion to be visible
+  for (int x= 1; x<1000; x++)  //Loop the forward stepping enough times for motion to be visible
   {
     digitalWrite(STEP,HIGH); //Trigger one step forward
-    delay(1000);
+    delay(1);
     digitalWrite(STEP,LOW); //Pull step pin low so it can be triggered again
-    delay(1000);
+    delay(1);
   }
 
-  Blink(LED, 20);
+resetMotorPins();
+Blink(LED, 20);
+}
+
+void resetMotorPins()
+{
+  digitalWrite(STEP, LOW);
+  digitalWrite(DIR, LOW);
+  digitalWrite(MS1, LOW);
+  digitalWrite(MS2, LOW);
+  digitalWrite(EN, HIGH);
 }
 
 

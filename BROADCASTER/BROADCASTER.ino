@@ -73,7 +73,7 @@ void loop() {
     //SEND THE DATA TO THE LIGHT CONTROL MODULE
     //sendToLCM(input);
     if (input == '5') sendToMCM();
-
+    sendToLCM(input);
     }
 }
 
